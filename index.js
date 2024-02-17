@@ -4,16 +4,19 @@ const { Server } = require("socket.io");
 
 const app = express();
 const httpServer = createServer(app);
+
+const isDev = app.settings.env === "development";
+const FRONTEND_URL = isDev
+  ? "http://localhost:3000"
+  : "https://sketch-book-six.vercel.app";
+
 const io = new Server(httpServer, {
-  /* options */
   cors: {
-    origin: "http://localhost:3000",
+    origin: FRONTEND_URL,
   },
 });
 
 io.on("connection", (socket) => {
-  // ...
-  console.log("backend socket connected...");
   socket.on("beginPath", (args) => {
     socket.broadcast.emit("beginPath", args);
   });
